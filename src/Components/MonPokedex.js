@@ -66,6 +66,7 @@ function MonPokedex() {
                     <Card.Text>
                       <p>n°{affichePokemon.id}</p>
                       <TypePokemon types={affichePokemon.types}/>
+                                       
                     </Card.Text>
                     <Form className="espacement" onSubmit={ajout}>
                       <Button variant="outline-primary" type="submit">
@@ -89,6 +90,8 @@ function MonPokedex() {
                         <Card.Text>
                           <p>n°{pokemon.id}</p>
                           <TypePokemon types={pokemon.types}/>
+   
+   
                         </Card.Text>
                       </Card.Body>            
                   </Card>
@@ -96,7 +99,7 @@ function MonPokedex() {
                 ))}
                 </div>
                 <div className='row mt-3'>
-                <Form className="espacement">
+                <Form className="espacement" onSubmit={deletePokedex}>
                   <Button variant="outline-danger" type="submit">
                         vider le pokedex
                   </Button>

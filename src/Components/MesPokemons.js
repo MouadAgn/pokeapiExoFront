@@ -1,3 +1,5 @@
+
+
 import React from "react";
 import axios from "axios";
 import { useState } from "react";
@@ -12,8 +14,8 @@ const MesPokemons=()=>{
     const [pokeData,setPokeData]=useState([]);
     const [Chargement,setChargement]=useState(true);
     const [url,setUrl]=useState("http://localhost:8000/api/pokemon")
-    const [nextUrl,setNextUrl]=useState();
-    const [previousUrl, setPreviousUrl]= useState()
+    const [nextUrl,setNextUrl]=useState("http://localhost:8000/api/pokemon/:offset/:limit");
+    const [previousUrl, setPreviousUrl]= useState("http://localhost:8000/api/pokemon/:offset/:limit"    )
 
     useEffect(()=>{
         getAllPokemon();
@@ -25,6 +27,8 @@ const MesPokemons=()=>{
         const res=await axios.get(url);
         console.log("ok get all pokemon")
         getPokemon(res.data.data)
+        setNextUrl("http://localhost:8000"+res.data.next)
+        setPreviousUrl("http://localhost:8000"+res.data.previous)
         setChargement(false)
     }
 
@@ -40,14 +44,22 @@ const MesPokemons=()=>{
        })   
     }
 
-    const ajout = async(e)=>{
-            e.preventDefault()
-            let res = await axios.get("https://pokeapi.co/api/v2/pokemon/"+e.target[0].value)
-            if(localStorage.getItem('MonPokedex')==null){
-                localStorage.setItem('MonPokedex', JSON.stringify([]))
-            }
+    const ajout = async(e) => {
+        e.preventDefault();
             
-    }
+            let res = await axios.get("https://pokeapi.co/api/v2/pokemon/" + e.target[0].value);
+            
+            let pokemonData = res.data; 
+            
+            let existingPokedex = JSON.parse(localStorage.getItem('MonPokedex'));
+
+            if(existingPokedex.push(pokemonData))
+            
+            localStorage.setItem('MonPokedex', JSON.stringify(existingPokedex));
+
+        } 
+    
+    
     
     return (
         <>
@@ -68,6 +80,7 @@ const MesPokemons=()=>{
                                         <Card.Text>
                                         <p>n°{item.id}</p>
                                         <TypePokemon types={item.types}/>
+                                        
                                         <Form className="espacement" onSubmit={ajout}>
                                             <Button variant="outline-primary" type="submit" value={item.id}>
                                                 Ajouter au pokédex
